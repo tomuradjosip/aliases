@@ -17,7 +17,7 @@ alias ce="cursor ~/.local/share/chezmoi"
 alias ca="chezmoi apply && exec zsh"
 
 # SSH add the GitHub key
-alias creds="ssh-add -D; ssh-add ~/.ssh/id_github"
+alias creds="ssh-add -D; for pub in $HOME/.ssh/*.pub; do ssh-add \"\${pub%.pub}\"; done"
 
 # Run pre-commit
 alias pre="pre-commit run -a"
