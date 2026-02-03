@@ -1,7 +1,13 @@
 #### Core aliases
 
-# Open the aliases repository in Cursor
-alias ea="cursor ~/.config/aliases"
+# Open the aliases repositories in Cursor (multi-root workspace if aliases-private exists)
+function ea() {
+  if [[ -d ~/.config/aliases-private ]]; then
+    cursor ~/.config/aliases ~/.config/aliases-private
+  else
+    cursor ~/.config/aliases
+  fi
+}
 # Source the zshrc file
 alias sa="exec zsh"
 

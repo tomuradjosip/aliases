@@ -1,14 +1,21 @@
 help() {
   # Display all custom aliases and functions (only those prefixed with 'function') from sourced alias files
-  # Supports both NixOS (/etc/zshenv + ALIASES_DIR) and macOS (~/.zshrc + ~/.config/aliases)
+  # Supports both NixOS (/etc/zshenv + ALIASES_DIR) and macOS (~/.zshrc + ~/.config/aliases + ~/.config/aliases-private)
 
-  local zshrc aliases_dir
+  local zshrc aliases_dir aliases_dir_private
   if [[ -n "$ALIASES_DIR" ]]; then
     zshrc="/etc/zshenv"
     aliases_dir="$ALIASES_DIR"
+    aliases_dir_private=""
   else
     zshrc="$HOME/.zshrc"
     aliases_dir="$HOME/.config/aliases"
+    # On macOS, also check for private aliases
+    if [[ -d "$HOME/.config/aliases-private" ]]; then
+      aliases_dir_private="$HOME/.config/aliases-private"
+    else
+      aliases_dir_private=""
+    fi
   fi
 
   # Colors
@@ -23,8 +30,10 @@ help() {
     # Match: source <path>/filename.zsh where path contains the aliases directory
     if [[ $line =~ 'source[[:space:]]+([^[:space:]]+\.zsh)' ]]; then
       local file="${match[1]}"
-      # Check if the file is in our aliases directory
-      if [[ "$file" == "$aliases_dir"/* ]] || [[ "$file" == '~/.config/aliases'/* ]] || [[ "$file" == '$HOME/.config/aliases'/* ]]; then
+      # Check if the file is in our aliases directory (public or private)
+      if [[ "$file" == "$aliases_dir"/* ]] || [[ "$file" == '~/.config/aliases'/* ]] || [[ "$file" == '$HOME/.config/aliases'/* ]] \
+         || ( [[ -n "$aliases_dir_private" ]] && [[ "$file" == "$aliases_dir_private"/* ]] ) \
+         || [[ "$file" == '~/.config/aliases-private'/* ]] || [[ "$file" == '$HOME/.config/aliases-private'/* ]]; then
         # Expand the path if needed
         [[ "$file" == '~'* ]] && file="${file/#\~/$HOME}"
         [[ "$file" == '$HOME'* ]] && file="${file/\$HOME/$HOME}"
