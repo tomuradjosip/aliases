@@ -1,49 +1,60 @@
 #### Git functions and aliases
 
+# Run pre-commit if a config exists in the current dir or the repo root
+function _run_precommit_if_configured() {
+  local repo_root
+  repo_root=$(git rev-parse --show-toplevel 2>/dev/null)
+  if [ -f .pre-commit-config.yaml ]; then
+    pre-commit run -a
+  elif [ -n "$repo_root" ] && [ -f "$repo_root/.pre-commit-config.yaml" ]; then
+    (cd "$repo_root" && pre-commit run -a)
+  fi
+}
+
 # Add all files, commit with message
 function ac() {
-  if [ -f .pre-commit-config.yaml ]; then pre-commit run -a; fi
+  _run_precommit_if_configured
   git add .
   git commit -m $1
 }
 
 # Add all files, commit with message, push
 function acp() {
-  if [ -f .pre-commit-config.yaml ]; then pre-commit run -a; fi
+  _run_precommit_if_configured
   git add .
   git commit -m $1 && git push
 }
 
 # Commit with message, push
 function gcp() {
-  if [ -f .pre-commit-config.yaml ]; then pre-commit run -a; fi
+  _run_precommit_if_configured
   git commit -m $1 && git push
 }
 
 # Add all files, commit with message, force push
 function acpf() {
-  if [ -f .pre-commit-config.yaml ]; then pre-commit run -a; fi
+  _run_precommit_if_configured
   git add .
   git commit -m $1 && git push --force-with-lease --force-if-includes
 }
 
 # Add all files, commit with message, push a new branch
 function acpn() {
-  if [ -f .pre-commit-config.yaml ]; then pre-commit run -a; fi
+  _run_precommit_if_configured
   git add .
   git commit -m $1 && git push --set-upstream origin $(git branch --show-current)
 }
 
 # Amend but don't change the commit message, force push with lease
 function amend() {
-  if [ -f .pre-commit-config.yaml ]; then pre-commit run -a; fi
+  _run_precommit_if_configured
   git add .
   git commit --no-edit --amend && git push --force-with-lease --force-if-includes
 }
 
 # Amend but change the commit message, force push with lease
 function amendm() {
-  if [ -f .pre-commit-config.yaml ]; then pre-commit run -a; fi
+  _run_precommit_if_configured
   git add .
   git commit --no-edit --amend -m "$1" && git push --force-with-lease --force-if-includes
 }
