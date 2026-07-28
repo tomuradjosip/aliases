@@ -11,6 +11,9 @@ function ea() {
 # Source the zshrc file
 alias sa="exec zsh"
 
+# Clear the screen and wipe the scrollback buffer
+alias cls="clear && printf '\033[3J'"
+
 # Open the chezmoi directory in Cursor
 alias ce="cursor ~/.local/share/chezmoi"
 # Apply the chezmoi changes
