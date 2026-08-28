@@ -54,6 +54,7 @@ help() {
     category="${category//_/ }"                        # Replace underscores with spaces
     category="${(C)category}"                          # Capitalize words
     category="${category/Aws/AWS}"                     # Fix AWS acronym
+    category="${category/Github/GitHub}"               # Fix GitHub casing
     local prev_comment=""
     local -A items=()
     local max_name_len=0
@@ -65,8 +66,9 @@ help() {
         continue
       fi
 
-      # Match function definitions with 'function' keyword only
-      if [[ $line =~ '^function[[:space:]]+([a-zA-Z_][a-zA-Z0-9_]*)' ]]; then
+      # Match function definitions with 'function' keyword only, skipping
+      # underscore-prefixed helpers that aren't meant to be called directly
+      if [[ $line =~ '^function[[:space:]]+([a-zA-Z][a-zA-Z0-9_]*)' ]]; then
         local name="${match[1]}"
         items[$name]="$prev_comment"
         (( ${#name} > max_name_len )) && max_name_len=${#name}
