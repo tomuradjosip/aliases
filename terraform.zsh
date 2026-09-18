@@ -6,6 +6,8 @@ alias tfi="terraform init"
 alias tfir="terraform init -reconfigure"
 # terraform init -upgrade
 alias tfiu="terraform init -upgrade"
+# terraform get -update
+alias tfgu="terraform get -update"
 # terraform plan
 alias tfp="terraform plan"
 # terraform apply
