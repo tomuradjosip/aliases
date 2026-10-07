@@ -6,6 +6,10 @@ alias hsync="/containers/homelab/scripts/sync-homelab.sh"
 alias hstatus="/containers/homelab/scripts/status-homelab.sh"
 # Sync pihole DNS
 alias hpihole="/containers/homelab/scripts/sync-pihole-dns.py"
+# Pull all homelab images
+alias hpull='rg --no-filename "^Image=" /containers/homelab/quadlets/containers | sed "s/^Image=//" | sort -u | xargs -r -n1 -P4 podman pull'
+# Prune all unused images
+alias hprune='podman image prune -af'
 # Restart homelab target
 alias hreboot="systemctl --user restart homelab.target"
 # Restart specific homelab service
